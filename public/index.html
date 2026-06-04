@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tomas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #000000;
+    --fg: #e8e8e8;
+    --dim: #444;
+    --accent: #c8ff00;
+    --muted: #1c1c1c;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.45;
+  }
+
+  /* ─── BANNER ─── */
+  #banner {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem 0 0;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+
+  #ascii-banner {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(5.5px, 0.72vw, 9px);
+    line-height: 1.18;
+    letter-spacing: 0.06em;
+    color: #b0b0b0;
+    white-space: pre;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+  }
+
+  #banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 75% 70% at 50% 45%, transparent 20%, rgba(0,0,0,0.6) 60%, #000 88%),
+      linear-gradient(to bottom, transparent 35%, #000 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ─── LAYOUT ─── */
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 2.8rem 0 3.5rem;
+    border-bottom: 1px solid var(--muted);
+  }
+
+  .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.7rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .tw-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #e8e8e8;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ─── ABOUT ─── */
+  .about-body p {
+    font-size: 0.84rem;
+    color: #888;
+    line-height: 1.85;
+    margin-bottom: 0.9rem;
+    max-width: 500px;
+  }
+  .about-body p:last-child { margin-bottom: 0; }
+
+  /* ─── SECTIONS ─── */
+  section {
+    padding: 2.8rem 0;
+    border-bottom: 1px solid var(--muted);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 1.8rem;
+  }
+
+  /* ─── STACK ─── */
+  .stack-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    list-style: none;
+  }
+
+  .stack-list li {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: #777;
+    border: 1px solid #1e1e1e;
+    padding: 0.28rem 0.65rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .stack-list li:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── WORK TIMELINE ─── */
+  .tl-company {
+    margin-bottom: 1.6rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #111;
+  }
+
+  .tl-company-name {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin-bottom: 0.25rem;
+  }
+
+  .tl-company-role {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: #555;
+    text-transform: uppercase;
+  }
+
+  .tl-phases {
+    position: relative;
+    padding-left: 1.4rem;
+    border-left: 1px solid #1c1c1c;
+  }
+
+  .tl-phase {
+    position: relative;
+    padding-bottom: 2.2rem;
+  }
+
+  .tl-phase:last-child { padding-bottom: 0; }
+
+  .tl-phase::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem;
+    top: 0.42rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1c1c1c;
+    border: 1px solid #2c2c2c;
+  }
+
+  .tl-phase.active::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(200,255,0,0.2);
+  }
+
+  .tl-phase-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tl-phase-year {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: #555;
+    text-transform: uppercase;
+  }
+
+  .tl-phase-title {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin-bottom: 0.4rem;
+  }
+
+  .tl-phase-desc {
+    font-size: 0.76rem;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 0.55rem;
+  }
+
+  .tl-phase-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .tl-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: #333;
+  }
+
+  /* ─── CONTACT ─── */
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .contact-links a {
+    font-size: 0.8rem;
+    color: #555;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    transition: color 0.18s;
+  }
+
+  .contact-links a::before {
+    content: '→';
+    color: #2a2a2a;
+    transition: color 0.18s, transform 0.18s;
+    display: inline-block;
+  }
+
+  .contact-links a:hover { color: var(--fg); }
+  .contact-links a:hover::before {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding-top: 2.5rem;
+    font-size: 0.6rem;
+    color: #222;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+  <div id="banner">
+    <pre id="ascii-banner">                                                                 fLCCCCCCCCCCCCC00%%80GGCGGCCCCGGCCG00CC080GGGCf                  
+                                                               fLCCCCCCCCCCCCGG00000GGGCLCCLCCCCCG00CCC000GGGGGCL                 
+                                                            fLCCCCCCCCCCCCCG08880GGGG0GLCGCCCCCCLCCCGG0GCCG0G0GGGCL               
+                                                          fLCCCCCCLLLCCLCG08880GGGGG0CLG000GGGCLLLLC00GCG00GCC0%0GGCL             
+                                                       fLCCCCCLLLCCCGCCG08880GGGGGGGCLG88000GCLLLCCCCGGG0GLCG0880GCC0C            
+                                                     fLCCLLLLLLCCGGGGGG8880GGCGGG080CGGCCCLLCLLLCG00GGGGGGG0888GCGG08C            
+                                                  fLLLLLLLLLLCGGG0088GG0GGCCCLC08%8GGCLCCCCCGCCGGG000GGGGGGG00GCGG0%%t            
+                                                fLLLLLLLLLLCGCG008%%8GGCCCLLCGG80GCCLLGGGG000GG00080GGGGGGGGGGGG08%8f             
+                                             tfLLLLLLLLLCGCGGG08%%80GGCCLCCC00GGCCCLCG888888800008800GGGGGGGGGGGG0G               
+                                           fLLLLLLLLLLCGGGG088%800GCCCCCCG000GLCGGCG08%%%%%8%%880800GGGG000GGGGGGGCCCCCLf         
+                                        ffLLLLLLLLLLLLC0G08%%80GCCCCCLLG080CLCG0GC0%8%%#%%%%#%%%800GGG000000GGGGGGCCCCGGGGCCLLfff 
+                                      ffLLLLLLLLLLLCCCCCG8880GCCCCLLCG88GLCCG00GG08%%%88%%###%%#%8GGG00000000000GGCCCCCGCCCGGGGGGG
+                                    fLLfffLLLLLLCLLGG08GCGGGGCCLLCGG0GCGCCG00CLLG%#%%88GGG008%###0000008880000000GGGGGGGCCCCGGGGGG
+                                 fffffLLffffLLLCCCG00880CCCCLCGCCGGG0CLL00GCCCC00GG08%GCGCLCCG08800GG00888800888880000GGGGCGG00000
+                               fLLLfffLfffLCCLLG008800GCCCCCLLG008CLLG00GGCLC00GCCC088G00CCGGGCCCLLCGG08888888888800GGG0G000008800
+                            ffLLCCCLfffLCLfCGG008880GCCCCLLGG00CLLGG000CLLGG00CLCGG00GG880GG80000GG0888%%8888%%8880000008888888888
+                         fffffLCCLLfLLGGCCCG08880CCCCLLCGCG0GCGGCC00GLLCG00GLfCG0GLLCG8#%808%8888008888888888%888888888%%%%%%88888
+                       fffffffffLLLLLCC0CG08800GCCLCCLLCGCLLLCCG0GCGCCCGGCCCCG0GLLCC08%%%##%%%%%%8888888888%%%%88%%%%%%%%%%%%%%%88
+                      ffffffffffCCLLLCLC0088GCCCLCLLGG00f fLCCCGCffLLC00CLLCGGCLLCG8%%80G08%####88%%%%%%%%%%%%#######%%%%%%%%%%%%%
+                     CffffffffG0GGG0CCCLCGGGCCLLCCLC0GCLLLLCCLLCCCfffLLCCC00CLCCG08%80GCCC0%%##G  LG8##%%%%###8GCCC08%###%%%%%%%%%
+                     GGfffffLC0808880CLLLLLLCCLfC0000CLCGGGGCCLCCGCLfffLLGCLLCG08%88GCCCC08%#0f      LG8%%80Gf        LG8###%%%%%%
+                     CGCffffLCLG88%%0CLLLLLLCCCG0GCLGGCCLLCCGCCCCCGCLfffLGGCC08%80GCCCCG08#8L                            fG%###%%%
+                     CGGCfffffCCG080GCLLCCLfC0GG0GLLLGLffLCLCGGCCLLCCLLLCG00GG880GCCC088%%G                                 L0%###
+                     LGG0GfffffCLCCCCLLfCGG08GCfLGG00CLLCGCCCCGGCCLLCCCCCG000CGGLCCG008%0f                                     C8#
+                     fGGG0GfffffLLLCCCLLG00G00CLC0GCGCGCGGCCGCCGLLLLGGGCCCG0G0CCCCG88%8L                                         f
+                      CGG00CfffffLL00CG88GCLL0008GLff0%%80GGGGGCLLLCGG0GCGG0G00GCG8%%C                                            
+                       CGGGGCfffffLC0G0GLCLC08088GLCG808%%0G00GCCLCG0GGGGG000G00GC8G                                              
+                        CGGGGCfffffLC080GG088GLCG0G0GCCG0%%8GGGCCCCCGGGGGGGG000000G                                               
+                         LGGGGCfffffLL880%0CCLLCGCGLfffLC0%%8GCGCGGCGGGGGGGG0000008L                                              
+                          LGGGGGfffffLC888CCCC0%8CLLCLLCGLG88GCCCGGGGGGGCG0GG0G00080                                              
+                           LGGGGGfffffLC88G08%8GCLLG0CG00GCCGCLCCG000GGGG00GGG0G0008f                                             
+                            fGGGGGffLffLL000%GLCCC8#%8080G0GCLLCCCG00GGG000GGG000008C                                             
+                             fGGGGGffLLfLL088GGG0%%0G8%80000GCCCCGGGG0GG0GGGGGGGG0000                                             </pre>
+  </div>
+
+  <main>
+    <header>
+      <div class="name" id="tw-name"></div>
+    </header>
+
+    <section id="s-about">
+      <div class="section-label">About</div>
+      <div class="about-body">
+        <p>Started shipping controllers and views, moved deeper into APIs and database design, now automating document processing with AI integrations and LLMs. The complexity stack keeps growing, and so does the curiosity.</p>
+        <p>Outside of work: tinkering with operating systems, messing with hardware, and chasing the perfect audio setup. Into vinyl records, literary fiction, and anything that can be taken apart and put back together differently.</p>
+      </div>
+    </section>
+
+    <section id="s-stack">
+      <div class="section-label">Stack</div>
+      <ul class="stack-list">
+        <li>Python</li>
+        <li>SQL Server</li>
+        <li>Linux</li>
+        <li>Laravel</li>
+        <li>PHP</li>
+        <li>Gemini API</li>
+        <li>Vertex AI</li>
+        <li>Anthropic API</li>
+        <li>Ollama</li>
+        <li>Docker</li>
+        <li>Git</li>
+        <li>REST APIs</li>
+        <li>Bash</li>
+      </ul>
+    </section>
+
+    <section id="s-work">
+      <div class="section-label">Work</div>
+      <div class="tl-company">
+        <div class="tl-company-name">Fidelitas</div>
+        <div class="tl-company-role">Full-time · 3+ years</div>
+      </div>
+      <div class="tl-phases">
+
+        <div class="tl-phase">
+          <div class="tl-phase-header">
+            <span class="tl-phase-year">2023</span>
+          </div>
+          <div class="tl-phase-title">Controllers & Views</div>
+          <div class="tl-phase-desc">Started building the frontend logic — controllers, views, routing, shipping features end to end.</div>
+          <div class="tl-phase-tags">
+            <span class="tl-tag">Laravel</span>
+            <span class="tl-tag">PHP</span>
+            <span class="tl-tag">Blade</span>
+          </div>
+        </div>
+
+        <div class="tl-phase">
+          <div class="tl-phase-header">
+            <span class="tl-phase-year">2024–2025</span>
+          </div>
+          <div class="tl-phase-title">APIs & Database</div>
+          <div class="tl-phase-desc">Shifted to APIs and the database layer. Schema design, SQL, backend architecture.</div>
+          <div class="tl-phase-tags">
+            <span class="tl-tag">REST APIs</span>
+            <span class="tl-tag">SQL Server</span>
+            <span class="tl-tag">PHP</span>
+            <span class="tl-tag">Laravel</span>
+          </div>
+        </div>
+
+        <div class="tl-phase active">
+          <div class="tl-phase-header">
+            <span class="tl-phase-year">2025–2026 · current</span>
+          </div>
+          <div class="tl-phase-title">AI & Data Processing</div>
+          <div class="tl-phase-desc">Implementing AI integrations, automating document processing with Python, working with LLMs and data extraction at scale.</div>
+          <div class="tl-phase-tags">
+            <span class="tl-tag">Python</span>
+            <span class="tl-tag">Gemini API</span>
+            <span class="tl-tag">Vertex AI</span>
+            <span class="tl-tag">Anthropic API</span>
+            <span class="tl-tag">SQL Server</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s-contact">
+      <div class="section-label">Contact</div>
+      <div class="contact-links">
+        
+        <a href="https://github.com/tomasbrian" target="_blank">github.com/tomasbrian</a>
+        <a href="https://linkedin.com/in/tomas-b-ab3691272" target="_blank">linkedin.com/in/tomas-b-ab3691272</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>— 2026 —</span>
+    </footer>
+  </main>
+
+  <script>
+    // ─── TYPEWRITER ───
+    function typewriter(el, text, speed, onDone) {
+      let i = 0;
+      const cur = document.createElement('span');
+      cur.className = 'tw-cursor';
+      el.appendChild(cur);
+      const iv = setInterval(() => {
+        cur.insertAdjacentText('beforebegin', text[i++]);
+        if (i >= text.length) {
+          clearInterval(iv);
+          if (onDone) setTimeout(onDone, 200);
+        }
+      }, speed);
+    }
+
+    setTimeout(() => {
+      typewriter(document.getElementById('tw-name'), 'hello, tomas here.', 75, () => {
+        ['s-about', 's-stack', 's-work', 's-contact'].forEach((id, i) => {
+          setTimeout(() => {
+            document.getElementById(id).classList.add('visible');
+          }, 150 + i * 120);
+        });
+      });
+    }, 400);
+  </script>
+</body>
+</html>
