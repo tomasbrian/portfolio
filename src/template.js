@@ -79,9 +79,7 @@ ${phases}
       </div>
     </section>
 
-    <footer>
-      <span>— ${year} —</span>
-    </footer>
+    <footer></footer>
   </main>
 
   <script>
