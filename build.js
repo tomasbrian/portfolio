@@ -23,7 +23,7 @@ console.log(`  → ASCII: ${asciiArt.split('\n').length} rows`);
 const html = buildHTML({ styles, asciiArt, data });
 
 // Write output
-const outPath = join(__dirname, 'public/index.html');
+const outPath = join(__dirname, 'docs/index.html');
 writeFileSync(outPath, html, 'utf-8');
 
 const kb = (Buffer.byteLength(html, 'utf-8') / 1024).toFixed(1);
