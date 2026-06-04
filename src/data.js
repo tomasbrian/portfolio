@@ -39,6 +39,6 @@ export const data = {
   contact: {
     // email: 'tomasbrianb@gmail.com',
     github: 'github.com/tomasbrian',
-    linkedin: 'linkedin.com/in/tomas-b-ab3691272',
+    linkedin: 'linkedin.com/in/tomasbrianb',
   },
 };
