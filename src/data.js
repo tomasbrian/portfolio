@@ -2,7 +2,7 @@ export const data = {
   name: 'hello, tomas here.',
   about: [
     `Started shipping controllers and views, moved deeper into APIs and database design, now automating document processing with AI integrations and LLMs. The complexity stack keeps growing, and so does the curiosity.`,
-    `Outside of work: tinkering with operating systems, messing with hardware, and chasing the perfect audio setup. Into vinyl records, literary fiction, and anything that can be taken apart and put back together differently.`,
+    `Outside of work: tinkering with operating systems, messing with hardware. Into vinyl records, literary fiction, and anything that can be taken apart and put back together differently.`,
   ],
   stack: [
     'Python', 'SQL Server', 'Linux', 'Laravel', 'PHP',
