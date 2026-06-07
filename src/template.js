@@ -1,5 +1,7 @@
-export function buildHTML({ styles, asciiArt, data }) {
-  const { name, about, stack, work, contact } = data;
+export function buildHTML({ styles, data }) {
+  const { name, accentWord, about, stack, work, contact } = data;
+
+  const [nameBefore, nameAfter] = name.split(accentWord);
 
   const stackItems = stack
     .map(s => `        <li>${s}</li>`)
@@ -11,17 +13,13 @@ export function buildHTML({ styles, asciiArt, data }) {
 
   const phases = work.phases.map(p => `
         <div class="tl-phase${p.active ? ' active' : ''}">
-          <div class="tl-phase-header">
-            <span class="tl-phase-year">${p.year}${p.active ? ' · current' : ''}</span>
-          </div>
+          <span class="tl-phase-year">${p.year}${p.active ? ' · now' : ''}</span>
           <div class="tl-phase-title">${p.title}</div>
           <div class="tl-phase-desc">${p.desc}</div>
           <div class="tl-phase-tags">
             ${p.tags.map(t => `<span class="tl-tag">${t}</span>`).join('\n            ')}
           </div>
         </div>`).join('\n');
-
-  const year = new Date().getFullYear();
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -36,9 +34,14 @@ export function buildHTML({ styles, asciiArt, data }) {
 </head>
 <body>
 
-  <div id="banner">
-    <pre id="ascii-banner">${asciiArt}</pre>
-  </div>
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <a href="#s-about"><span class="nav-slash">/</span>about</a>
+      <a href="#s-stack"><span class="nav-slash">/</span>stack</a>
+      <a href="#s-work"><span class="nav-slash">/</span>work</a>
+      <a href="#s-contact"><span class="nav-slash">/</span>contact</a>
+    </nav>
+  </aside>
 
   <main>
     <header>
@@ -46,21 +49,21 @@ export function buildHTML({ styles, asciiArt, data }) {
     </header>
 
     <section id="s-about">
-      <div class="section-label">About</div>
+      <div class="section-label"><span class="path-slash">/</span>about</div>
       <div class="about-body">
 ${aboutParagraphs}
       </div>
     </section>
 
     <section id="s-stack">
-      <div class="section-label">Stack</div>
+      <div class="section-label"><span class="path-slash">/</span>stack</div>
       <ul class="stack-list">
 ${stackItems}
       </ul>
     </section>
 
     <section id="s-work">
-      <div class="section-label">Work</div>
+      <div class="section-label"><span class="path-slash">/</span>work</div>
       <div class="tl-company">
         <div class="tl-company-name">${work.company}</div>
         <div class="tl-company-role">${work.duration}</div>
@@ -71,7 +74,7 @@ ${phases}
     </section>
 
     <section id="s-contact">
-      <div class="section-label">Contact</div>
+      <div class="section-label"><span class="path-slash">/</span>contact</div>
       <div class="contact-links">
         ${contact.email ? `<a href="mailto:${contact.email}">${contact.email}</a>` : ''}
         ${contact.github ? `<a href="https://${contact.github}" target="_blank">${contact.github}</a>` : ''}
@@ -83,15 +86,29 @@ ${phases}
   </main>
 
   <script>
-    // ─── TYPEWRITER ───
-    function typewriter(el, text, speed, onDone) {
+    function typewriter(el, segments, speed, onDone) {
+      const chars = [];
+      for (const seg of segments)
+        for (const c of seg.text) chars.push({ c, accent: !!seg.accent });
       let i = 0;
       const cur = document.createElement('span');
       cur.className = 'tw-cursor';
       el.appendChild(cur);
+      let accentNode = null;
       const iv = setInterval(() => {
-        cur.insertAdjacentText('beforebegin', text[i++]);
-        if (i >= text.length) {
+        const { c, accent } = chars[i++];
+        if (accent) {
+          if (!accentNode) {
+            accentNode = document.createElement('span');
+            accentNode.className = 'name-hl';
+            cur.before(accentNode);
+          }
+          accentNode.textContent += c;
+        } else {
+          accentNode = null;
+          cur.insertAdjacentText('beforebegin', c);
+        }
+        if (i >= chars.length) {
           clearInterval(iv);
           if (onDone) setTimeout(onDone, 200);
         }
@@ -99,14 +116,28 @@ ${phases}
     }
 
     setTimeout(() => {
-      typewriter(document.getElementById('tw-name'), '${name}', 75, () => {
+      typewriter(document.getElementById('tw-name'), [
+        { text: '${nameBefore}' },
+        { text: '${accentWord}', accent: true },
+        { text: '${nameAfter}' }
+      ], 75, () => {
         ['s-about', 's-stack', 's-work', 's-contact'].forEach((id, i) => {
-          setTimeout(() => {
-            document.getElementById(id).classList.add('visible');
-          }, 150 + i * 120);
+          setTimeout(() => document.getElementById(id).classList.add('visible'), 150 + i * 120);
         });
       });
     }, 400);
+
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sidebarLinks.forEach(a => a.classList.remove('active'));
+          const link = document.querySelector(\`.sidebar-nav a[href="#\${entry.target.id}"]\`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => spy.observe(s));
   </script>
 </body>
 </html>`;

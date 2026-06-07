@@ -1,5 +1,6 @@
 export const data = {
   name: 'hello, tomas here.',
+  accentWord: 'tomas',
   about: [
     `Started shipping controllers and views, moved deeper into APIs and database design, now automating document processing with AI integrations and LLMs. The complexity stack keeps growing, and so does the curiosity.`,
     `Outside of work: tinkering with operating systems, messing with hardware. Into vinyl records, literary fiction, and anything that can be taken apart and put back together differently.`,
@@ -8,6 +9,20 @@ export const data = {
     'Python', 'SQL Server', 'Linux', 'Laravel', 'PHP',
     'Gemini API', 'Vertex AI', 'Anthropic API',
     'Ollama', 'Docker', 'Git', 'REST APIs', 'Bash',
+  ],
+  projects: [
+    {
+      title: 'Document Processing Pipeline',
+      desc: 'Automated document ingestion, classification, and structured data extraction using LLMs. Handles high-volume processing with Python workers.',
+      tags: ['Python', 'Gemini API', 'Vertex AI', 'SQL Server'],
+      url: null,
+    },
+    {
+      title: 'Internal REST API',
+      desc: 'Backend API for a multi-tenant business platform. Schema design, auth flow, and data layer on SQL Server.',
+      tags: ['Laravel', 'PHP', 'REST APIs', 'SQL Server'],
+      url: null,
+    },
   ],
   work: {
     company: 'Fidelitas',
