@@ -20,6 +20,7 @@ export const styles = `
     font-weight: 300;
     min-height: 100vh;
     overflow-x: hidden;
+    padding-left: 160px;
   }
 
   body::after {
@@ -78,8 +79,8 @@ export const styles = `
 
   /* ─── LAYOUT ─── */
   main {
-    margin-left: 160px;
     max-width: 740px;
+    margin: 0 auto 0 4rem;
     padding: 0 3.5rem 8rem;
   }
 
@@ -292,6 +293,9 @@ export const styles = `
 
   /* ─── MOBILE ─── */
   @media (max-width: 640px) {
+    html, body {
+      padding-left: 0;
+    }
     .sidebar {
       position: relative;
       width: 100%;
@@ -308,7 +312,6 @@ export const styles = `
       gap: 1.2rem;
     }
     main {
-      margin-left: 0;
       max-width: 100%;
       padding: 0 1.5rem 6rem;
     }
